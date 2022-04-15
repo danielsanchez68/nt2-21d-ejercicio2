@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Ejemplo 1</title>
+    <title>Alumnos YA21D</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -14,9 +14,19 @@
 
 
 <div class="container-fluid mt-3" id="app">
-    <input type="text" class="form-control" v-model="criterioDeBusqueda"
-        placeholder="Ingresar un criterio de busqueda...">
+    <input type="text" class="form-control" v-model="busquedaNombre"
+        placeholder="Ingresar nombre o apellido...">
     <br>
+    <input type="text" class="form-control" v-model="busquedaDNI"
+        placeholder="Ingresar un número de DNI...">
+    <br>
+
+    <div class="row" v-if="contarChars">
+        <div class="col-12">
+            <div class="alert alert-danger">Alerta! Pocos caracteres ingresados</div>
+        </div>
+    </div>
+
     <div class="card-deck m-0">
         <div class="row">
             <div class="col" v-for="persona in personasFiltradas">
@@ -30,7 +40,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 </html>
@@ -40,6 +49,8 @@
         el: '#app',
         data: {
             criterioDeBusqueda: '',
+            busquedaNombre: '',
+            busquedaDNI: '',
             //Aquí, en este array es donde tienen que agregar su información
             personas: [
                 {
@@ -60,9 +71,14 @@
         computed: {
             personasFiltradas() {
                 return this.personas.filter((persona) => {
-                    let registroCompleto = `${persona.nombre} ${persona.apellido} ${persona.dni} ${persona.correo}`
-                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
+                    let nombreCompleto = `${persona.nombre} ${persona.apellido}`
+                    let dni = `${persona.dni}`
+                    return nombreCompleto.toLowerCase().includes(this.busquedaNombre.toLowerCase()) && dni.includes(this.busquedaDNI)
                 });
+            },
+
+            contarChars() {
+                return this.busquedaNombre.length <= 3 && this.busquedaDNI.length <= 3 && (this.busquedaNombre.length > 0 || this.busquedaDNI.length > 0)
             }
         },
         methods: {
